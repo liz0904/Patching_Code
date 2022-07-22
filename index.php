@@ -89,10 +89,10 @@ if($_GET['page'] == "upload"){
     $extension = explode(".",$_FILES['fileToUpload']['name'])[1];
 
     if($extension == "txt" || $extension == "png"){
-        ///////////////////////////////////////////////
-        //system("cp {$_FILES['fileToUpload']['tmp_name']} ./upload/{$_FILES['fileToUpload']['name']}");
-        move_uploaded_file("{$_FILES['fileToUpload']['tmp_name']}", "./upload/{$_FILES['fileToUpload']['name']}");
-     
+        ///////////////////////////////////////
+        define ('tmp_path', $_FILES['fileToUpload']['tmp_name']);
+        define ('path', ./upload/{$_FILES['fileToUpload']['name']);
+        system("cp {$_FILES['fileToUpload']['tmp_name']} ./upload/{$_FILES['fileToUpload']['name']}");
         exit("<script>alert(`upload ok`);location.href=`/`;</script>");
     }
     else{
