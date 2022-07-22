@@ -90,8 +90,9 @@ if($_GET['page'] == "upload"){
 
     if($extension == "txt" || $extension == "png"){
         ///////////////////////////////////////////////
-        Runtime.getRuntime().exec(new String[]{"cp ",$_FILES['fileToUpload']['tmp_name']," ./upload/", $_FILES['fileToUpload']['name']});
         //system("cp {$_FILES['fileToUpload']['tmp_name']} ./upload/{$_FILES['fileToUpload']['name']}");
+        move_uploaded_file("{$_FILES['fileToUpload']['tmp_name']}", "./upload/{$_FILES['fileToUpload']['name']}");
+     
         exit("<script>alert(`upload ok`);location.href=`/`;</script>");
     }
     else{
