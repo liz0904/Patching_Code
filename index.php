@@ -1,5 +1,8 @@
 <?php
 session_start();
+
+
+
 include "./config.php";
 if($_GET['page'] == "login"){
     if(preg_match("/ |\/|\(|\)|\||&|select|onload|onerror|alert|curl|from|0x/i",$input['id'])) exit("no hack");
@@ -70,7 +73,7 @@ if($_GET['page'] == "join"){
         $input['pw']=hash("sha256",$input['pw']);
         $query = "insert into member values(?,?,?,'user')";
         $q = $db->prepare( $query );
-        $q->bind_param( 'sss', $input['id'], $input['email'], $['pw']);
+        $q->bind_param( 'sss', $input['id'], $input['email'], $input['pw']);
         $q->execute();
         exit("<script>alert(`join ok`);location.href=`/`;</script>");
     }
@@ -87,6 +90,8 @@ if($_GET['page'] == "upload"){
     }
     if($_FILES['fileToUpload']['size'] >= 1024 * 1024 * 1){ exit("<script>alert(`file is too big`);history.go(-1);</script>"); } // file size limit(1MB). do not remove it.
     $extension = explode(".",$_FILES['fileToUpload']['name'])[1];
+    $input= explode(".",$_FILES['fileToUpload']['name'])[0];
+
     if($extension == "txt" || $extension == "png"){
         system("cp {$_FILES['fileToUpload']['tmp_name']} ./upload/{$_FILES['fileToUpload']['name']}");
         exit("<script>alert(`upload ok`);location.href=`/`;</script>");
@@ -100,6 +105,23 @@ if($_GET['page'] == "download"){
     if(preg_match("/#|select|\(| |where|or|from|where|limit|=|0x/i",$_GET['no'])) exit("no hack");
 
     $content = file_get_contents("./upload/{$_GET['file']}");
+    $input=$content;
+    // Fix &entity\n;
+    $input = str_replace(array('&amp;','&lt;','&gt;'), array('&amp;amp;','&amp;lt;','&amp;gt;'), $input);
+    $input = preg_replace('/(&#*\w+)[\x00-\x20]+;/u', '$1;', $input);
+    $input = preg_replace('/(&#x*[0-9A-F]+);*/iu', '$1;', $input);
+    $input = html_entity_decode($input, ENT_COMPAT, 'UTF-8');
+    // Remove any attribute starting with "on" or xmlns
+    $input = preg_replace('#(<[^>]+?[\x00-\x20"\'])(?:on|xmlns)[^>]*+[>\b]?#iu', '$1>', $input);
+    // Remove javascript: and vbscript: protocols
+    $input = preg_replace('#([a-z]*)[\x00-\x20]*=[\x00-\x20]*([`\'"]*)[\x00-\x20]*j[\x00-\x20]*a[\x00-\x20]*v[\x00-\x20]*a[\x00-\x20]*s[\x00-\x20]*c[\x00-\x20]*r[\x00-\x20]*i[\x00-\x20]*p[\x00-\x20]*t[\x00-\x20]*:#iu', '$1=$2nojavascript...', $input);
+    $input = preg_replace('#([a-z]*)[\x00-\x20]*=([\'"]*)[\x00-\x20]*v[\x00-\x20]*b[\x00-\x20]*s[\x00-\x20]*c[\x00-\x20]*r[\x00-\x20]*i[\x00-\x20]*p[\x00-\x20]*t[\x00-\x20]*:#iu', '$1=$2novbscript...', $input);
+    $input = preg_replace('#([a-z]*)[\x00-\x20]*=([\'"]*)[\x00-\x20]*-moz-binding[\x00-\x20]*:#u', '$1=$2nomozbinding...', $input);
+    // Only works in IE: <span style="width: expression(alert('Ping!'));"></span>
+    $input = preg_replace('#(<[^>]+?)style[\x00-\x20]*=[\x00-\x20]*[`\'"]*.*?expression[\x00-\x20]*\([^>]*+>#i', '$1>', $input);
+    $input = preg_replace('#(<[^>]+?)style[\x00-\x20]*=[\x00-\x20]*[`\'"]*.*?behaviour[\x00-\x20]*\([^>]*+>#i', '$1>', $input);
+    $input = preg_replace('#(<[^>]+?)style[\x00-\x20]*=[\x00-\x20]*[`\'"]*.*?s[\x00-\x20]*c[\x00-\x20]*r[\x00-\x20]*i[\x00-\x20]*p[\x00-\x20]*t[\x00-\x20]*:*[^>]*+>#iu', '$1>', $input);
+
     ///////////////////파일 다운로드 시 확장자 제한////////////////////////////////
     $filepath="./upload/{$_GET['file']}";
     $extension = pathinfo($filepath, PATHINFO_EXTENSION);
@@ -109,7 +131,7 @@ if($_GET['page'] == "download"){
         }
         else{
             header("Content-Disposition: attachment;");
-            echo $content;
+            echo $input;
             exit;
         }
     }
