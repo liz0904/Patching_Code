@@ -50,6 +50,11 @@ if($_GET['page'] == "join"){
        exit("<script>alert(`no secure password!`);history.go(-1);</script>");
     }
     if(!filter_var($input['email'],FILTER_VALIDATE_EMAIL)) exit("<script>alert(`wrong email`);history.go(-1);</script>");
+    
+    $input['id']=mysqli_real_escape_string($db, $input['id']);
+    $input['email']=mysqli_real_escape_string($db, $input['email']);
+    $input['pw']=mysqli_real_escape_string($db, $input['pw']);
+
     $query = "select id from member where id='{$input['id']}'";
     $result = mysqli_fetch_array(mysqli_query($db,$query));
     if(!$result['id']){
