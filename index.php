@@ -12,8 +12,13 @@ if($_GET['page'] == "login"){
         exit("<script>alert(`wrong input`);history.go(-1);</script>");
     }
     $db = dbconnect();
-    $query = "select id,pw from member where id='{$input['id']}'";
-    $result = mysqli_fetch_array(mysqli_query($db,$query));
+
+    $query = "select id,pw from member where id=?";
+    $q = $db->prepare( $query );
+    $q->bind_param( 's', $input['id']);
+    $q->execute();
+    $result = mysqli_fetch_array($q->get_result());
+
     ///////admin 로그인 시 비밀번호 암호화////////////
     if($input['id']=='admin'){
        $result['pw']=hash("sha256",$result['pw']);
@@ -55,8 +60,11 @@ if($_GET['page'] == "join"){
     $input['email']=mysqli_real_escape_string($db, $input['email']);
     $input['pw']=mysqli_real_escape_string($db, $input['pw']);
 
-    $query = "select id from member where id='{$input['id']}'";
-    $result = mysqli_fetch_array(mysqli_query($db,$query));
+    $query = "select id,pw from member where id=?";
+    $q = $db->prepare( $query );
+    $q->bind_param( 's', $input['id']);
+    $q->execute();
+    $result = mysqli_fetch_array($q->get_result());
     if(!$result['id']){
         ///////////회원가입 시 비밀번호 암호화//////////////
         $input['pw']=hash("sha256",$input['pw']);
