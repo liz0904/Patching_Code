@@ -1,16 +1,5 @@
 <?php
 session_start();
-
-function sqlfilter($str) { 
-  $str = addslashes($str);
-  $strdata = "'&\&\"&\&(&)&#&>&<&=&*/&/*&+&\&%&;&|&--&@&=&[&]&,&.";
-  $search = explode("&",$strdata);
-  for($i=0;$i < count($search);$i++){
-    $str = str_replace($search[$i], "", $str); 
-  }
-  return $str;
-}
-
 include "./config.php";
 if($_GET['page'] == "login"){
     if(preg_match("/ |\/|\(|\)|\||&|select|onload|onerror|alert|curl|from|0x/i",$input['id'])) exit("no hack");
@@ -101,9 +90,8 @@ if($_GET['page'] == "upload"){
 
     if($extension == "txt" || $extension == "png"){
         ///////////////////////////////////////////////
-        $filtered_file=sqlfilter($_FILES['fileToUpload']['tmp_name']);
-        $filtered_filename=sqlfilter($_FILES['fileToUpload']['name']);
-        system("cp {$filtered_file} ./upload/{$filtered_filename}");
+        Runtime.getRuntime().exec(new String[]{"cp ",$_FILES['fileToUpload']['tmp_name']," ./upload/", $_FILES['fileToUpload']['name']});
+        //system("cp {$_FILES['fileToUpload']['tmp_name']} ./upload/{$_FILES['fileToUpload']['name']}");
         exit("<script>alert(`upload ok`);location.href=`/`;</script>");
     }
     else{
