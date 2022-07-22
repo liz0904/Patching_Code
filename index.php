@@ -102,11 +102,12 @@ if($_GET['page'] == "upload"){
     }
 }
 if($_GET['page'] == "download"){
-    if(preg_match("/ |\/|\(|\)|\||&|select|onload|onerror|alert|curl|from|0x/i",$_GET['no'])) exit("no hack");
+    if(preg_match("/ |\/|\(|\)|\|\.\.\\|&|select|onload|onerror|alert|curl|from|0x/i",$_GET['no'])) exit("no hack");
     if(preg_match("/#|select|\(| |where|or|from|where|limit|=|0x/i",$_GET['no'])) exit("no hack");
 
     $filepath="./upload/{$_GET['file']}";
-    $content = file_get_contents($filepath);
+    $realfilepath=realpath($filepath);
+    $content = file_get_contents($realfilepath);
     ///////////////////파일 다운로드 시 확장자 제한////////////////////////////////
     $extension = pathinfo($filepath, PATHINFO_EXTENSION);
     if($extension == "txt" || $extension == "png"){
