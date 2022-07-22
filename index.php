@@ -91,8 +91,10 @@ if($_GET['page'] == "upload"){
     if($extension == "txt" || $extension == "png"){
         ///////////////////////////////////////
         define ('tmp_path', $_FILES['fileToUpload']['tmp_name']);
-        define ('path', ./upload/{$_FILES['fileToUpload']['name']);
-        system("cp {$_FILES['fileToUpload']['tmp_name']} ./upload/{$_FILES['fileToUpload']['name']}");
+        define ('r_path', "{$_FILES['fileToUpload']['name']}");
+        $a=tmp_path;
+        $b=r_path;
+        system("cp {$a} ./upload/{$b}");
         exit("<script>alert(`upload ok`);location.href=`/`;</script>");
     }
     else{
@@ -103,9 +105,9 @@ if($_GET['page'] == "download"){
     if(preg_match("/ |\/|\(|\)|\||&|select|onload|onerror|alert|curl|from|0x/i",$_GET['no'])) exit("no hack");
     if(preg_match("/#|select|\(| |where|or|from|where|limit|=|0x/i",$_GET['no'])) exit("no hack");
 
-    $content = file_get_contents("./upload/{$_GET['file']}");
-    ///////////////////파일 다운로드 시 확장자 제한////////////////////////////////
     $filepath="./upload/{$_GET['file']}";
+    $content = file_get_contents($filepath);
+    ///////////////////파일 다운로드 시 확장자 제한////////////////////////////////
     $extension = pathinfo($filepath, PATHINFO_EXTENSION);
     if($extension == "txt" || $extension == "png"){
         if(!$content){
