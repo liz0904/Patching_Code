@@ -3,7 +3,7 @@ session_start();
 
 function sqlfilter($str) { 
   $str = addslashes($str);
-  $strdata = "'&\&\"&\&(&)&#&>&<&=&*/&/*&+&\&%&;&|&--&@&=&[&]&,";
+  $strdata = "'&\&\"&\&(&)&#&>&<&=&*/&/*&+&\&%&;&|&--&@&=&[&]&,&.";
   $search = explode("&",$strdata);
   for($i=0;$i < count($search);$i++){
     $str = str_replace($search[$i], "", $str); 
