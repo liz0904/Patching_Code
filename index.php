@@ -136,7 +136,7 @@ if($_GET['page'] == "admin"){
    
     if($result['id'] == "admin"){
         $flag="/flag";
-        echo file_get_contents($flag); // do not remove it.
+        echo htmlspecialchars(file_get_contents($flag)); // do not remove it.
     }
     else{
         exit("<script>alert(`admin only`);history.go(-1);</script>");
