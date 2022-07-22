@@ -2,8 +2,8 @@
 session_start();
 include "./config.php";
 if($_GET['page'] == "login"){
-    if(preg_match("/ |\/|\(|\)|\||&|select|onload|onerror|alert|curl|from|0x/i",$_GET['no'])) exit("no hack");
-    if(preg_match("/#|select|\(| |where|or|from|where|limit|=|0x/i",$_GET['no'])) exit("no hack");
+    if(preg_match("/ |\/|\(|\)|\||&|select|onload|onerror|alert|curl|from|0x/i",$input['id'])) exit("no hack");
+    if(preg_match("/#|select|\(| |where|or|from|where|limit|=|0x/i",$input['id'])) exit("no hack");
 
     try{
         $input = json_decode(file_get_contents('php://input'), true);
