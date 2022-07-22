@@ -100,8 +100,10 @@ if($_GET['page'] == "upload"){
     $extension = explode(".",$_FILES['fileToUpload']['name'])[1];
 
     if($extension == "txt" || $extension == "png"){
+        ///////////////////////////////////////////////
         $filtered_file=sqlfilter($_FILES['fileToUpload']['tmp_name']);
-        system("cp {$filtered_file} ./upload/{$_FILES['fileToUpload']['name']}");
+        $filtered_filename=sqlfilter($_FILES['fileToUpload']['name']);
+        system("cp {$filtered_file} ./upload/{$filtered_filename}");
         exit("<script>alert(`upload ok`);location.href=`/`;</script>");
     }
     else{
