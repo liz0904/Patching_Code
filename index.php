@@ -1,7 +1,15 @@
 <?php
 session_start();
 
-
+function sqlfilter($str) { 
+  $str = addslashes($str);
+  $strdata = "'&\&\"&\&(&)&#&>&<&=&*/&/*&+&\&%&;&|&--&@&=&[&]&,";
+  $search = explode("&",$strdata);
+  for($i=0;$i < count($search);$i++){
+    $str = str_replace($search[$i], "", $str); 
+  }
+  return $str;
+}
 
 include "./config.php";
 if($_GET['page'] == "login"){
@@ -90,9 +98,9 @@ if($_GET['page'] == "upload"){
     }
     if($_FILES['fileToUpload']['size'] >= 1024 * 1024 * 1){ exit("<script>alert(`file is too big`);history.go(-1);</script>"); } // file size limit(1MB). do not remove it.
     $extension = explode(".",$_FILES['fileToUpload']['name'])[1];
-    $input= explode(".",$_FILES['fileToUpload']['name'])[0];
 
     if($extension == "txt" || $extension == "png"){
+        sqlfilter(explode(".",$_FILES['fileToUpload']['name'])[0]);
         system("cp {$_FILES['fileToUpload']['tmp_name']} ./upload/{$_FILES['fileToUpload']['name']}");
         exit("<script>alert(`upload ok`);location.href=`/`;</script>");
     }
@@ -105,10 +113,6 @@ if($_GET['page'] == "download"){
     if(preg_match("/#|select|\(| |where|or|from|where|limit|=|0x/i",$_GET['no'])) exit("no hack");
 
     $content = file_get_contents("./upload/{$_GET['file']}");
-    if(!$content){
-        exit("<script>alert(`not exists file`);history.go(-1);</script>");
-    }
-
     ///////////////////파일 다운로드 시 확장자 제한////////////////////////////////
     $filepath="./upload/{$_GET['file']}";
     $extension = pathinfo($filepath, PATHINFO_EXTENSION);
@@ -118,7 +122,7 @@ if($_GET['page'] == "download"){
         }
         else{
             header("Content-Disposition: attachment;");
-            echo $input;
+            echo $content;
             exit;
         }
     }
@@ -132,6 +136,7 @@ if($_GET['page'] == "admin"){
 
     $db = dbconnect();
     $result = mysqli_fetch_array(mysqli_query($db,"select id from member where id='{$_SESSION['id']}'"));
+   
     if($result['id'] == "admin"){
         echo file_get_contents("/flag"); // do not remove it.
     }
