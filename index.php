@@ -68,8 +68,10 @@ if($_GET['page'] == "join"){
     if(!$result['id']){
         ///////////회원가입 시 비밀번호 암호화//////////////
         $input['pw']=hash("sha256",$input['pw']);
-        $query = "insert into member values('{$input['id']}','{$input['email']}','{$input['pw']}','user')";
-        mysqli_query($db,$query);
+        $query = "insert into member values(?,?,?,'user')";
+        $q = $db->prepare( $query );
+        $q->bind_param( 'sss', $input['id'], $input['email'], $['pw']);
+        $q->execute();
         exit("<script>alert(`join ok`);location.href=`/`;</script>");
     }
     else{
