@@ -26,8 +26,10 @@ if($_GET['page'] == "login"){
     else{ exit("<script>alert(`login fail`);history.go(-1);</script>"); }
 }
 if($_GET['page'] == "join"){
-    if(preg_match("/ |\/|\(|\)|\||&|select|onload|onerror|alert|curl|from|0x/i",$_GET['no'])) exit("no hack");
-    if(preg_match("/#|select|\(| |where|or|from|where|limit|=|0x/i",$_GET['no'])) exit("no hack");
+    if(preg_match("/ |\/|\(|\)|\||&|select|onload|onerror|alert|curl|from|0x/i",$input['id'])) exit("no hack");
+    if(preg_match("/#|select|\(| |where|or|from|where|limit|=|0x/i",$input['id'])) exit("no hack");
+    if(preg_match("/ |\/|\(|\)|\||&|select|onload|onerror|alert|curl|from|0x/i",$input['email'])) exit("no hack");
+    if(preg_match("/#|select|\(| |where|or|from|where|limit|=|0x/i",$input['pw'])) exit("no hack");
 
     try{
         $input = json_decode(file_get_contents('php://input'), true);
