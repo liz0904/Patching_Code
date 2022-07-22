@@ -105,12 +105,10 @@ if($_GET['page'] == "download"){
     if(preg_match("/ |\/|\(|\)|\\|&|select|onload|onerror|alert|curl|from|0x/i",$_GET['no'])) exit("no hack");
     if(preg_match("/#|select|\(| |where|or|from|where|limit|=|0x/i",$_GET['no'])) exit("no hack");
 
-    $filename=$_GET['file'];
-    if(preg_match("/..\//", $filename)){
-        exit("no hack");
-    }
-    $content = file_get_contents("./upload/{$_GET['file']}");
-    $filepath="./upload/{$_GET['file']}";
+    define ('tmp_path', $_GET['file']);
+    $a=tmp_path;
+    $content = file_get_contents("./upload/{$a}");
+    $filepath="./upload/{$a}";
 
     ///////////////////파일 다운로드 시 확장자 제한////////////////////////////////
     $extension = pathinfo($filepath, PATHINFO_EXTENSION);
