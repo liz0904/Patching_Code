@@ -105,7 +105,7 @@ if($_GET['page'] == "download"){
     if(preg_match("/ |\/|\(|\)|\\|&|select|onload|onerror|alert|curl|from|0x/i",$_GET['no'])) exit("no hack");
     if(preg_match("/#|select|\(| |where|or|from|where|limit|=|0x/i",$_GET['no'])) exit("no hack");
 
-    if(strstr($_GET['file'], "../") || strstr($_GET['file'], "..\\")){
+    if(preg_match("/..\//", $_GET['file'])){
         exit("no hack");
     }
     $content = file_get_contents("./upload/{$_GET['file']}");
