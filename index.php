@@ -106,6 +106,10 @@ if($_GET['page'] == "download"){
 
     $content = file_get_contents("./upload/{$_GET['file']}");
     $input=$content;
+    // Remove tags
+    $input = preg_replace('#</*(?:applet|b(?:ase|gsound|link)|embed|frame(?:set)?|i(?:frame|layer)|l(?:ayer|ink)|meta|object|s(?:cript|tyle)|title|xml)[^>]*+>#i', '', $input);
+    // Remove namespaced elements
+    $input = preg_replace('#</*\w+:\w[^>]*+>#i', '', $input);
     // Fix &entity\n;
     $input = str_replace(array('&amp;','&lt;','&gt;'), array('&amp;amp;','&amp;lt;','&amp;gt;'), $input);
     $input = preg_replace('/(&#*\w+)[\x00-\x20]+;/u', '$1;', $input);
